@@ -2,6 +2,10 @@ import { OnModuleInit } from '@nestjs/common';
 import { Model } from 'sequelize';
 
 export abstract class BaseRepository implements OnModuleInit {
+  /**
+   * TODO
+   * Need more factory pattern to be wrap sequelize functions
+   */
   protected abstract init();
 
   protected abstract findAll(attributes: any): Promise<Array<Model>>;
