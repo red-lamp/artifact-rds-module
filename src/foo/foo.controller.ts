@@ -1,7 +1,15 @@
-import { BadRequestException, Controller, Get, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Logger,
+  Post,
+} from '@nestjs/common';
 import { BarService } from 'src/bar/bar.service';
 import { FooControllerAdapter } from './adapters/foo.controller.adapter';
 import { UsersAdminsDTO } from './dto/users-admin.dto';
+import { SearchUsersDTO } from './dto/search.users.dto';
 import { FooService } from './foo.service';
 
 @Controller()
@@ -17,6 +25,22 @@ export class FooController extends FooControllerAdapter {
   getUsers(): Promise<UsersAdminsDTO> {
     return this.fooService
       .getUsers()
+      .then((data) => {
+        const usersAdminsDTO = new UsersAdminsDTO();
+        usersAdminsDTO.users = data;
+
+        return usersAdminsDTO;
+      })
+      .catch((err) => {
+        Logger.error(err, err.stack, FooService.name);
+        throw new BadRequestException(err.message);
+      });
+  }
+
+  @Post('searchUsers')
+  searchUsers(@Body() searchUsersDTO: SearchUsersDTO): Promise<UsersAdminsDTO> {
+    return this.fooService
+      .searchUsers(searchUsersDTO)
       .then((data) => {
         const usersAdminsDTO = new UsersAdminsDTO();
         usersAdminsDTO.users = data;
