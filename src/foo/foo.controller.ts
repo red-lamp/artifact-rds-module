@@ -37,7 +37,7 @@ export class FooController extends FooControllerAdapter {
       });
   }
 
-  @Post('searchUsers')
+  @Post('users/search')
   searchUsers(@Body() searchUsersDTO: SearchUsersDTO): Promise<UsersAdminsDTO> {
     return this.fooService
       .searchUsers(searchUsersDTO)
