@@ -30,17 +30,10 @@ export class FooService extends FooServiceAdapter {
    * Search users
    */
   async searchUsers(searchUsersDTO: SearchUsersDTO): Promise<Array<Model>> {
-    // Find all users
+    // Find all users with ids
     const users = await this.userRepository.findAll(
       this.buildSearchUsersWithIds(searchUsersDTO),
     );
-    // console.log('All users:', users);
-
-    // const usersLastname = await this.userRepository.findAll({
-    //   attributes: ['last_name'],
-    // });
-    // console.log('Name of user index 0 is', this.extractFullname(users[0]));
-
     return users;
   }
 }
