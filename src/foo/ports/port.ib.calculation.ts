@@ -1,3 +1,3 @@
-export interface PortIBDecorator {
+export interface PortIBCalculation {
   totalItems(lengthOfUser: number, lengthOfAdmin: number): number;
 }

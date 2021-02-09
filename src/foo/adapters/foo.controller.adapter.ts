@@ -1,6 +1,6 @@
-import { PortIBDecorator } from '../ports/port.ib.decorator';
+import { PortIBCalculation } from '../ports/port.ib.calculation';
 
-export class FooControllerAdapter implements PortIBDecorator {
+export class FooControllerAdapter implements PortIBCalculation {
   totalItems(lengthOfUser: number, lengthOfAdmin: number): number {
     return lengthOfUser + lengthOfAdmin;
   }
