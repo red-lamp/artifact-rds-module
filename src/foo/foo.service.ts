@@ -17,11 +17,11 @@ export class FooService extends FooServiceAdapter {
     // Find all users
     const users = await this.userRepository.findAll();
     // console.log('All users:', users);
+    console.log('Name of user index 0 is', this.extractFullname(users[0]));
 
     // const usersLastname = await this.userRepository.findAll({
     //   attributes: ['last_name'],
     // });
-    // console.log('Name of user index 0 is', this.extractFullname(users[0]));
 
     return users;
   }
