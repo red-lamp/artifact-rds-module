@@ -31,9 +31,13 @@ export class FooService extends FooServiceAdapter {
    */
   async searchUsers(searchUsersDTO: SearchUsersDTO): Promise<Array<Model>> {
     // Find all users with ids
-    const users = await this.userRepository.findAll(
-      this.buildSearchUsersWithIds(searchUsersDTO),
+    const searchUserQuery = this.buildSearchUsersWithIds(searchUsersDTO);
+    this.userRepository.findAllWithCallback(
+      searchUserQuery,
+      this.transformUserResult,
     );
+
+    const users = await this.userRepository.findAll(searchUserQuery);
     return users;
   }
 }

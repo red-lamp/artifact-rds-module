@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { DataTypes, Model, ModelCtor } from 'sequelize';
 import { BaseRepository } from 'src/rds/core/base.repository';
@@ -38,6 +39,18 @@ export class UserRepository extends BaseRepository {
 
   findAll(attributes?: any): Promise<Model[]> {
     return this.userModel.findAll(attributes);
+  }
+
+  findAllWithCallback(attributes: any, callback: (users: Model[]) => any) {
+    // return this.userModel.findAll(attributes);
+    return this.userModel
+      .findAll(attributes)
+      .then((data: Model[]) => {
+        callback(data);
+      })
+      .catch((err) => {
+        Logger.error(err, err.stack, UserRepository.name);
+      });
   }
 
   insert(data: any, fields?: any): Promise<Model> {

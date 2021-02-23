@@ -8,7 +8,7 @@ export abstract class BaseRepository implements OnModuleInit {
    */
   protected abstract init();
 
-  protected abstract findAll(attributes: any): Promise<Array<Model>>;
+  protected abstract findAll(attributes: any): Promise<void | Model[]>;
 
   protected abstract insert(data: any, fields: any): Promise<Model>;
 
