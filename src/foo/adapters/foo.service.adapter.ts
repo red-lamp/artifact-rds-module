@@ -8,7 +8,6 @@ export class FooServiceAdapter implements PortOBRepository {
   };
 
   extractFullname(user: Model): string {
-    console.log('listener', this);
     return user.get('first_name') + ' ' + user.get('last_name');
   }
 
