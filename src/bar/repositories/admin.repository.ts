@@ -40,6 +40,10 @@ export class AdminRepository extends BaseRepository {
   //   return this.userModel;
   // }
 
+  findOne(where: any): Promise<Model> {
+    return this.adminModel.findOne(where);
+  }
+
   findAll(attributes?: any): Promise<Model[]> {
     return this.adminModel.findAll(attributes);
   }
@@ -50,6 +54,10 @@ export class AdminRepository extends BaseRepository {
 
   update(data: any, where: any): Promise<[number, Model[]]> {
     return this.adminModel.update(data, where);
+  }
+
+  upsert(data: any, where: any): Promise<[Model, boolean]> {
+    return this.adminModel.upsert(data, where);
   }
 
   delete(where: any): Promise<number> {

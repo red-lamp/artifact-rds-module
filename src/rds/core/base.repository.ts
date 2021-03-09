@@ -10,9 +10,13 @@ export abstract class BaseRepository implements OnModuleInit {
 
   protected abstract findAll(attributes: any): Promise<Model[]>;
 
+  protected abstract findOne(where: any): Promise<Model>;
+
   protected abstract insert(data: any, fields: any): Promise<Model>;
 
   protected abstract update(data: any, where: any): Promise<[number, Model[]]>;
+
+  protected abstract upsert(data: any, where: any): Promise<[Model, boolean]>;
 
   protected abstract delete(where: any): Promise<number>;
 
