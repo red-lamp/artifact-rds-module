@@ -34,33 +34,10 @@ export class AdminRepository extends BaseRepository {
         },
         'admin',
       );
+    return this.adminModel;
   }
 
   // getUserModel(): ModelCtor<Model> {
-  //   return this.userModel;
+  //   return this.adminModel;
   // }
-
-  findOne(where: any): Promise<Model> {
-    return this.adminModel.findOne(where);
-  }
-
-  findAll(attributes?: any): Promise<Model[]> {
-    return this.adminModel.findAll(attributes);
-  }
-
-  insert(data: any, fields?: any): Promise<Model> {
-    return this.adminModel.create(data, fields);
-  }
-
-  update(data: any, where: any): Promise<[number, Model[]]> {
-    return this.adminModel.update(data, where);
-  }
-
-  upsert(data: any, where: any): Promise<[Model, boolean]> {
-    return this.adminModel.upsert(data, where);
-  }
-
-  delete(where: any): Promise<number> {
-    return this.adminModel.destroy(where);
-  }
 }

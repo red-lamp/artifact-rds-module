@@ -1,24 +1,50 @@
-import { OnModuleInit } from '@nestjs/common';
-import { Model } from 'sequelize';
+import { Logger, OnModuleInit } from '@nestjs/common';
+import { Model, ModelCtor } from 'sequelize';
 
 export abstract class BaseRepository implements OnModuleInit {
+  private model: ModelCtor<Model>;
+
   /**
    * TODO
    * Need more factory pattern to be wrap sequelize functions
    */
-  protected abstract init();
+  protected abstract init(): ModelCtor<Model>;
 
-  protected abstract findAll(attributes: any): Promise<Model[]>;
+  findAll(attributes?: any): Promise<Model[]> {
+    return this.model.findAll(attributes);
+  }
 
-  protected abstract findOne(where: any): Promise<Model>;
+  findOne(where: any): Promise<Model> {
+    return this.model.findOne(where);
+  }
 
-  protected abstract insert(data: any, fields: any): Promise<Model>;
+  findAllWithCallback(attributes: any, callback: (users: Model[]) => any) {
+    // return this.model.findAll(attributes);
+    return this.model
+      .findAll(attributes)
+      .then((data: Model[]) => {
+        callback(data);
+      })
+      .catch((err) => {
+        Logger.error(err, err.stack, BaseRepository.name);
+      });
+  }
 
-  protected abstract update(data: any, where: any): Promise<[number, Model[]]>;
+  insert(data: any, fields?: any): Promise<Model> {
+    return this.model.create(data, fields);
+  }
 
-  protected abstract upsert(data: any, where: any): Promise<[Model, boolean]>;
+  update(data: any, where: any): Promise<[number, Model[]]> {
+    return this.model.update(data, where);
+  }
 
-  protected abstract delete(where: any): Promise<number>;
+  upsert(data: any, where: any): Promise<[Model, boolean]> {
+    return this.model.upsert(data, where);
+  }
+
+  delete(where: any): Promise<number> {
+    return this.model.destroy(where);
+  }
 
   protected insertAndUpdate(
     insertData: any,
@@ -36,6 +62,6 @@ export abstract class BaseRepository implements OnModuleInit {
   }
 
   onModuleInit() {
-    this.init();
+    this.model = this.init();
   }
 }
