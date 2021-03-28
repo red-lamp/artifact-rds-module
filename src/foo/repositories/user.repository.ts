@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataTypes, Model, ModelCtor } from 'sequelize';
+import { DataTypes, Model, ModelCtor, QueryTypes } from 'sequelize';
 import { BaseRepository } from 'src/rds/core/base.repository';
 import { RDSService } from 'src/rds/rds.service';
 
@@ -33,7 +33,24 @@ export class UserRepository extends BaseRepository {
     return this.userModel;
   }
 
-  // getUserModel(): ModelCtor<Model> {
-  //   return this.userModel;
-  // }
+  queryRBPUser(options?: any): any {
+    let queryFilter = '';
+    if (options.where['uid__c']) {
+      queryFilter += `WHERE uid__c = '${options.where.uid__c}'`;
+    }
+
+    return this.rdsService.getPGClient().getSequelize().query(
+      `SELECT * FROM salesforce.rbp_member__c 
+      INNER JOIN (
+        SELECT rbp_member_ref_id, image_url
+        FROM public.user
+      ) AS users ON users.rbp_member_ref_id = uid__c
+      ${queryFilter} `,
+      { type: QueryTypes.SELECT },
+    );
+  }
+
+  getUserModel(): ModelCtor<Model> {
+    return this.userModel;
+  }
 }

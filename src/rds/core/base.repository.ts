@@ -18,16 +18,17 @@ export abstract class BaseRepository implements OnModuleInit {
     return this.model.findOne(where);
   }
 
-  findAllWithCallback(attributes: any, callback: (users: Model[]) => any) {
+  async findAllWithCallback(
+    attributes: any,
+    callback: (models: Model[]) => any,
+  ) {
     // return this.model.findAll(attributes);
-    return this.model
-      .findAll(attributes)
-      .then((data: Model[]) => {
-        callback(data);
-      })
-      .catch((err) => {
-        Logger.error(err, err.stack, BaseRepository.name);
-      });
+    try {
+      const data = await this.model.findAll(attributes);
+      callback(data);
+    } catch (err) {
+      Logger.error(err, err.stack, BaseRepository.name);
+    }
   }
 
   insert(data: any, fields?: any): Promise<Model> {
@@ -59,6 +60,17 @@ export abstract class BaseRepository implements OnModuleInit {
   protected findAllAndUpdate(attributes: any, updateData: any, where: any) {
     this.findAll(attributes);
     this.update(updateData, where);
+  }
+
+  buildQueryOption(dto: any, identifier: string) {
+    if (!dto[identifier]) {
+      return null;
+    }
+
+    const options = { where: {} };
+    options.where[identifier] = dto[identifier];
+
+    return options;
   }
 
   onModuleInit() {

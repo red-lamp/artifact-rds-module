@@ -40,4 +40,14 @@ export class FooService extends FooServiceAdapter {
     const users = await this.userRepository.findAll(searchUserQuery);
     return users;
   }
+
+  /**
+   * Get rbp user with uid__c
+   */
+  async getRBPUser(uid__c: string): Promise<Array<Model>> {
+    // Find rbp user
+    return await this.userRepository.queryRBPUser({
+      where: { uid__c: uid__c },
+    });
+  }
 }

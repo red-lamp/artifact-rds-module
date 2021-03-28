@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Logger,
+  Param,
   Post,
 } from '@nestjs/common';
 import { BarService } from 'src/bar/bar.service';
@@ -11,6 +12,7 @@ import { FooControllerAdapter } from './adapters/foo.controller.adapter';
 import { UsersAdminsDTO } from './dto/users-admin.dto';
 import { SearchUsersDTO } from './dto/search.users.dto';
 import { FooService } from './foo.service';
+import { ResponseDTO } from 'src/common/dto/response.dto';
 
 @Controller()
 export class FooController extends FooControllerAdapter {
@@ -46,6 +48,22 @@ export class FooController extends FooControllerAdapter {
         usersAdminsDTO.users = data;
 
         return usersAdminsDTO;
+      })
+      .catch((err) => {
+        Logger.error(err, err.stack, FooService.name);
+        throw new BadRequestException(err.message);
+      });
+  }
+
+  @Get('/users/:uid__c')
+  getRBPUser(@Param('uid__c') uid__c: string): Promise<ResponseDTO> {
+    return this.fooService
+      .getRBPUser(uid__c)
+      .then((data) => {
+        const responseDTO = new ResponseDTO();
+        responseDTO['rbp_user'] = data;
+
+        return responseDTO;
       })
       .catch((err) => {
         Logger.error(err, err.stack, FooService.name);

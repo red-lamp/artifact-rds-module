@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { DataTypes, Model, ModelCtor } from 'sequelize';
-import { BaseRepository } from 'src/rds/core/base.repository';
+import { UserRepository } from 'src/foo/repositories/user.repository';
+import { AssociateRepository } from 'src/rds/core/associate.repository';
 import { RDSService } from 'src/rds/rds.service';
 
 @Injectable()
-export class AdminRepository extends BaseRepository {
+export class AdminRepository extends AssociateRepository {
   private adminModel: ModelCtor<Model>;
 
-  constructor(private rdsService: RDSService) {
+  constructor(
+    private rdsService: RDSService,
+    private userRepository: UserRepository,
+  ) {
     super();
   }
 
@@ -35,6 +39,18 @@ export class AdminRepository extends BaseRepository {
         'admin',
       );
     return this.adminModel;
+  }
+
+  protected initAssociateModels(): ModelCtor<Model>[] {
+    console.log('initiate of association models is here');
+    return null;
+  }
+
+  protected setupAssociation() {
+    console.log(
+      'the other model from other repo is available to do association here, your model is :',
+      this.userRepository.getUserModel(),
+    );
   }
 
   // getUserModel(): ModelCtor<Model> {
