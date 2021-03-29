@@ -41,9 +41,10 @@ export class AdminRepository extends AssociateRepository {
     return this.adminModel;
   }
 
-  protected initAssociateModels(): ModelCtor<Model>[] {
+  protected initAssociateModels(): Map<string, ModelCtor<Model>> {
     console.log('initiate of association models is here');
-    return null;
+    const associateModels = new Map<string, ModelCtor<Model>>();
+    return associateModels;
   }
 
   protected setupAssociation() {

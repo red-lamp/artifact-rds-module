@@ -5,7 +5,7 @@ import { BaseRepository } from './base.repository';
 export abstract class AssociateRepository
   extends BaseRepository
   implements OnApplicationBootstrap {
-  private associateModels: ModelCtor<Model>[];
+  private associateModels: Map<string, ModelCtor<Model>>;
 
   /**
    * TODO
@@ -13,10 +13,15 @@ export abstract class AssociateRepository
    */
   protected abstract setupAssociation(): void;
 
-  protected getAssociateModels(): ModelCtor<Model>[] {
+  protected getAssociateModels(): Map<string, ModelCtor<Model>> {
     return this.associateModels;
   }
-  protected abstract initAssociateModels(): ModelCtor<Model>[];
+
+  protected getAssociateModel(key: string): ModelCtor<Model> {
+    return this.associateModels.get(key);
+  }
+
+  protected abstract initAssociateModels(): Map<string, ModelCtor<Model>>;
 
   onModuleInit() {
     this.associateModels = this.initAssociateModels();
