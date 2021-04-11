@@ -2,12 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsArray } from 'class-validator';
 import { ResponseDTO } from 'src/common/dto/response.dto';
 
-export class AdminDTO extends ResponseDTO {
+export class ProjectDTO extends ResponseDTO {
   @IsArray()
   @ApiProperty({
-    description: 'admin list',
+    description: 'project list',
     type: [],
     example: [],
   })
-  admins: any[];
+  projects: any[];
 }

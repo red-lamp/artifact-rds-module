@@ -1,33 +1,29 @@
 import { OnApplicationBootstrap } from '@nestjs/common';
-import { Model, ModelCtor } from 'sequelize';
+import { Model } from 'sequelize';
 import { BaseRepository } from './base.repository';
 
 export abstract class AssociateRepository
   extends BaseRepository
   implements OnApplicationBootstrap {
-  private associateModels: Map<string, ModelCtor<Model>>;
+  private associateFetch: Map<string, any>;
 
   /**
    * TODO
    * Need associateModels provide factory method for better usage
    */
-  protected abstract setupAssociation(): void;
+  protected abstract setupAssociation(associateFetch: Map<string, any>): void;
 
-  protected getAssociateModels(): Map<string, ModelCtor<Model>> {
-    return this.associateModels;
+  findAllAssociation(key: string, attributes?: any): Promise<Model[]> {
+    attributes.include = this.associateFetch.get(key);
+    return super.findAll(attributes);
   }
-
-  protected getAssociateModel(key: string): ModelCtor<Model> {
-    return this.associateModels.get(key);
-  }
-
-  protected abstract initAssociateModels(): Map<string, ModelCtor<Model>>;
 
   onModuleInit() {
-    this.associateModels = this.initAssociateModels();
+    super.onModuleInit();
+    this.associateFetch = new Map<string, any>();
   }
 
   onApplicationBootstrap() {
-    this.setupAssociation();
+    this.setupAssociation(this.associateFetch);
   }
 }

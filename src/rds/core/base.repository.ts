@@ -2,7 +2,7 @@ import { Logger, OnModuleInit } from '@nestjs/common';
 import { Model, ModelCtor } from 'sequelize';
 
 export abstract class BaseRepository implements OnModuleInit {
-  private model: ModelCtor<Model>;
+  protected model: ModelCtor<Model>;
 
   /**
    * TODO

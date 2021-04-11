@@ -41,20 +41,16 @@ export class AdminRepository extends AssociateRepository {
     return this.adminModel;
   }
 
-  protected initAssociateModels(): Map<string, ModelCtor<Model>> {
-    console.log('initiate of association models is here');
-    const associateModels = new Map<string, ModelCtor<Model>>();
-    return associateModels;
-  }
-
-  protected setupAssociation() {
+  protected setupAssociation(associateFetch: Map<string, any>) {
     console.log(
-      'the other model from other repo is available to do association here, your model is :',
+      'the other model from other repo is available to do association here, your model from repository is :',
+      this.adminModel,
       this.userRepository.getUserModel(),
+      associateFetch,
     );
   }
 
-  // getUserModel(): ModelCtor<Model> {
+  // getAdminModel(): ModelCtor<Model> {
   //   return this.adminModel;
   // }
 }
