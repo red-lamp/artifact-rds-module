@@ -17,7 +17,7 @@ export class ProjectRepository extends AssociateRepository {
 
   protected init() {
     this.projectModel = this.rdsService
-      .getPGClient()
+      .getRDSClient()
       .getModelBuilder()
       .define(
         'Project',

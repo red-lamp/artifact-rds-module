@@ -17,7 +17,7 @@ export class AdminRepository extends AssociateRepository {
 
   protected init() {
     this.adminModel = this.rdsService
-      .getPGClient()
+      .getRDSClient()
       .getModelBuilder()
       .define(
         'Admin',

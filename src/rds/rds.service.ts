@@ -1,20 +1,24 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PGClient } from './core/pg.client';
+import { RDSClient } from './core/rds.client';
 
 @Injectable()
 export class RDSService implements OnModuleInit {
-  private pgClient: PGClient;
+  private rdsClient: RDSClient;
 
-  constructor(configService: ConfigService) {
-    this.pgClient = new PGClient(configService);
+  constructor(private configService: ConfigService) {
+    this.rdsClient = new RDSClient('postgres', this.getConfiguration());
+  }
+
+  getConfiguration(): string {
+    return this.configService.get('PG_DB_CONFIG');
   }
 
   async onModuleInit(): Promise<void> {
-    await this.pgClient.authenticate();
+    await this.rdsClient.authenticate();
   }
 
-  getPGClient(): PGClient {
-    return this.pgClient;
+  getRDSClient(): RDSClient {
+    return this.rdsClient;
   }
 }

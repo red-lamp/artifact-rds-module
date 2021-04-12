@@ -13,7 +13,7 @@ export class UserRepository extends BaseRepository {
 
   protected init() {
     this.userModel = this.rdsService
-      .getPGClient()
+      .getRDSClient()
       .getModelBuilder()
       .define(
         'User',
@@ -39,7 +39,7 @@ export class UserRepository extends BaseRepository {
       queryFilter += `WHERE uid__c = '${options.where.uid__c}'`;
     }
 
-    return this.rdsService.getPGClient().getSequelize().query(
+    return this.rdsService.getRDSClient().getSequelize().query(
       `SELECT * FROM salesforce.rbp_member__c 
       INNER JOIN (
         SELECT rbp_member_ref_id, image_url

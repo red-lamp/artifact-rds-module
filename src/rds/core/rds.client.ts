@@ -1,25 +1,23 @@
 import { Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Sequelize } from 'sequelize';
 import { RDSModelBuilder } from './rds.builder.model';
 
-export class PGClient {
+export class RDSClient {
   private sequelize: Sequelize;
-  private rdsModelBuilder: RDSModelBuilder;
+  // private rdsModelBuilder: RDSModelBuilder;
 
   /**
    * Initiate config and start authenticate DB
    * @param configService a config service with value from .env
    */
-  constructor(private configService: ConfigService) {
-    const dbConfig = this.configService.get('PG_DB_CONFIG');
+  constructor(dialect: any, dbConfig: any) {
     this.sequelize = new Sequelize(
       dbConfig.database,
       dbConfig.dbuser,
       dbConfig.password,
       {
         host: dbConfig.host,
-        dialect: 'postgres',
+        dialect: dialect,
         dialectOptions: {
           ssl: {
             require: true,
@@ -40,16 +38,12 @@ export class PGClient {
       await this.sequelize.authenticate();
       // this.rdsModelBuilder = new RDSModelBuilder(this.sequelize);
       Logger.log(
-        'PG Connection has been established successfully.',
-        PGClient.name,
+        'Sequelize Connection has been established successfully.',
+        RDSClient.name,
       );
     } catch (err) {
-      Logger.error(err, err.stack, PGClient.name);
+      Logger.error(err, err.stack, RDSClient.name);
     }
-  }
-
-  getConfiguration(): string {
-    return this.configService.get('PG_DB_CONFIG');
   }
 
   getSequelize(): Sequelize {
