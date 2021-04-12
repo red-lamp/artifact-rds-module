@@ -45,12 +45,8 @@ export class AdminRepository extends AssociateRepository {
     console.log(
       'the other model from other repo is available to do association here, your model from repository is :',
       this.adminModel,
-      this.userRepository.getUserModel(),
+      this.userRepository.getModel(),
       associateFetch,
     );
   }
-
-  // getAdminModel(): ModelCtor<Model> {
-  //   return this.adminModel;
-  // }
 }

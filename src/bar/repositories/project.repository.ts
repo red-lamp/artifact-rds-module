@@ -60,16 +60,15 @@ export class ProjectRepository extends AssociateRepository {
     console.log(
       'the other model from other repo is available to do association here, your model from repository is :',
       this.projectModel,
-      this.userRepository.getUserModel(),
+      this.userRepository.getModel(),
     );
 
-    this.projectModel.belongsTo(this.userRepository.getUserModel(), {
+    this.projectModel.belongsTo(this.userRepository.getModel(), {
       foreignKey: 'user_id',
     });
 
-    associateFetch.set('projectWithUser', this.userRepository.getUserModel());
-
-    // associateFetch.set('projectWithUserWithOthers', [
+    associateFetch.set('user', this.userRepository.getModel());
+    // associateFetch.set('user-others', [
     //   {
     //     model: this.userRepository.getUserModel(),
     //     include: [
@@ -80,8 +79,4 @@ export class ProjectRepository extends AssociateRepository {
     //   },
     // ]);
   }
-
-  // getAdminModel(): ModelCtor<Model> {
-  //   return this.adminModel;
-  // }
 }

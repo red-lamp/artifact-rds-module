@@ -24,9 +24,25 @@ export class BarService extends BarServiceAdapter {
   /**
    * Get all projects with user id
    */
-  async getProjects(user_id: number): Promise<Array<Model>> {
-    return await this.projectRepository.findAllAssociation('projectWithUser', {
+  async getProjects(): Promise<Array<Model>> {
+    return await this.projectRepository.findAll();
+  }
+
+  /**
+   * Get all projects with user id
+   */
+  async getProjectsWithUserId(user_id: number): Promise<Array<Model>> {
+    return await this.projectRepository.include('user').findAll({
       where: { user_id: user_id },
+    });
+  }
+
+  /**
+   * Get single project with project id
+   */
+  async getProjectWithId(project_id: number): Promise<Model> {
+    return await this.projectRepository.include('user').findOne({
+      where: { id: project_id },
     });
   }
 }

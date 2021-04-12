@@ -49,8 +49,4 @@ export class UserRepository extends BaseRepository {
       { type: QueryTypes.SELECT },
     );
   }
-
-  getUserModel(): ModelCtor<Model> {
-    return this.userModel;
-  }
 }

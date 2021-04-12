@@ -62,6 +62,10 @@ export abstract class BaseRepository implements OnModuleInit {
     this.update(updateData, where);
   }
 
+  getModel(): ModelCtor<Model> {
+    return this.model;
+  }
+
   buildQueryOption(dto: any, identifier: string) {
     if (!dto[identifier]) {
       return null;
