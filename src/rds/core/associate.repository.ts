@@ -25,7 +25,7 @@ export abstract class AssociateRepository
     }
     const promise = super.findAll(attributes);
 
-    this.includeAttrs = null;
+    this.clearIncludeAttrs();
 
     return promise;
   }
@@ -36,9 +36,13 @@ export abstract class AssociateRepository
     }
     const promise = super.findOne(where);
 
-    this.includeAttrs = null;
+    this.clearIncludeAttrs();
 
     return promise;
+  }
+
+  private clearIncludeAttrs() {
+    this.includeAttrs = null;
   }
 
   onModuleInit() {
