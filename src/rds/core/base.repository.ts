@@ -39,6 +39,10 @@ export abstract class BaseRepository implements OnModuleInit {
     return this.model.update(data, where);
   }
 
+  bulkInsert(data: any, fields?: any): Promise<Array<Model>> {
+    return this.model.bulkCreate(data, fields);
+  }
+
   upsert(data: any, where: any): Promise<[Model, boolean]> {
     return this.model.upsert(data, where);
   }
