@@ -3,10 +3,14 @@ import { Model } from 'sequelize';
 import { UserRepository } from './repositories/user.repository';
 import { FooServiceAdapter } from './adapters/foo.service.adapter';
 import { SearchUsersDTO } from './dto/search.users.dto';
+import { UserAssociationRepository } from './repositories/user-association.repository';
 
 @Injectable()
 export class FooService extends FooServiceAdapter {
-  constructor(private userRepository: UserRepository) {
+  constructor(
+    private userRepository: UserRepository,
+    private userAssocicationRepository: UserAssociationRepository,
+  ) {
     super();
   }
 
@@ -49,5 +53,17 @@ export class FooService extends FooServiceAdapter {
     return await this.userRepository.queryRBPUser({
       where: { uid__c: uid__c },
     });
+  }
+
+  /**
+   * Get all users with Project
+   */
+  async getUsersWithProject(): Promise<Array<Model>> {
+    // Find all users
+    const users = await this.userAssocicationRepository
+      .include('project')
+      .findAll();
+
+    return users;
   }
 }

@@ -20,7 +20,10 @@ export abstract class AssociateRepository
   }
 
   findAll(attributes?: any): Promise<Model[]> {
-    if (attributes && this.includeAttrs) {
+    if (!attributes) {
+      attributes = {};
+    }
+    if (this.includeAttrs) {
       attributes.include = this.includeAttrs;
     }
     const promise = super.findAll(attributes);

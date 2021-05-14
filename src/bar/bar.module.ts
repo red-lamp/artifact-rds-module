@@ -10,6 +10,6 @@ import { ProjectRepository } from './repositories/project.repository';
   imports: [RDSModule],
   controllers: [BarController],
   providers: [BarService, AdminRepository, UserRepository, ProjectRepository],
-  exports: [BarService],
+  exports: [BarService, ProjectRepository],
 })
 export class BarModule {}

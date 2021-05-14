@@ -1,17 +1,17 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DataTypes, Model, ModelCtor, QueryTypes } from 'sequelize';
 import { ProjectRepository } from 'src/bar/repositories/project.repository';
-import { BaseRepository } from 'src/rds/core/base.repository';
+import { AssociateRepository } from 'src/rds/core/associate.repository';
 import { RDSService } from 'src/rds/rds.service';
 
 @Injectable()
-export class UserRepository extends BaseRepository {
+export class UserAssociationRepository extends AssociateRepository {
   private userModel: ModelCtor<Model>;
 
   constructor(
     private rdsService: RDSService,
     @Inject(forwardRef(() => ProjectRepository))
-    private readonly projectRepository: ProjectRepository, // example of circular dependencies
+    private readonly projectRepository: ProjectRepository,
   ) {
     super();
   }
@@ -36,6 +36,15 @@ export class UserRepository extends BaseRepository {
         'user',
       );
     return this.userModel;
+  }
+
+  protected setupAssociation(associateFetch: Map<string, any>) {
+    this.userModel.hasMany(this.projectRepository.getModel(), {
+      foreignKey: 'user_id',
+      sourceKey: 'id',
+    });
+
+    associateFetch.set('project', this.projectRepository.getModel());
   }
 
   queryRBPUser(options?: any): any {

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DataTypes, Model, ModelCtor } from 'sequelize';
 import { UserRepository } from 'src/foo/repositories/user.repository';
 import { AssociateRepository } from 'src/rds/core/associate.repository';
@@ -10,6 +10,7 @@ export class ProjectRepository extends AssociateRepository {
 
   constructor(
     private rdsService: RDSService,
+    @Inject(forwardRef(() => UserRepository))
     private userRepository: UserRepository,
   ) {
     super();

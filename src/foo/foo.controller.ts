@@ -71,6 +71,22 @@ export class FooController extends FooControllerAdapter {
       });
   }
 
+  @Get('/users_project')
+  getUsersWithProject(): Promise<UsersAdminsDTO> {
+    return this.fooService
+      .getUsersWithProject()
+      .then((data) => {
+        const usersAdminsDTO = new UsersAdminsDTO();
+        usersAdminsDTO.users = data;
+
+        return usersAdminsDTO;
+      })
+      .catch((err) => {
+        Logger.error(err, err.stack, FooService.name);
+        throw new BadRequestException(err.message);
+      });
+  }
+
   @Get('/usersWithAdmins')
   getUserWithAdmins(): Promise<UsersAdminsDTO> {
     const promiseUsers = this.fooService.getUsers();
