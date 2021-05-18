@@ -34,6 +34,7 @@ export class UserRepository extends BaseRepository {
           },
         },
         'user',
+        true,
       );
     return this.userModel;
   }

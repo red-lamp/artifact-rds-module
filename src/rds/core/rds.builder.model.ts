@@ -11,7 +11,7 @@ export class RDSModelBuilder {
     modelName: string,
     modelAttr: ModelAttributes<any, any>,
     tableName: string,
-    underscored: false,
+    underscored = false,
   ): ModelCtor<Model<any, any>> {
     return this.sequelize.define(modelName, modelAttr, {
       // Other model options go here
