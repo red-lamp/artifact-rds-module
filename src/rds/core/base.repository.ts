@@ -3,6 +3,7 @@ import { Model, ModelCtor } from 'sequelize';
 
 export abstract class BaseRepository implements OnModuleInit {
   protected model: ModelCtor<Model>;
+  private includeOptions = {};
 
   /**
    * TODO
@@ -11,7 +12,25 @@ export abstract class BaseRepository implements OnModuleInit {
   protected abstract init(): ModelCtor<Model>;
 
   findAll(attributes?: any): Promise<Model[]> {
-    return this.model.findAll(attributes);
+    if (!attributes) {
+      attributes = {};
+    }
+    if (this.includeOptions) {
+      attributes = { ...attributes, ...this.includeOptions };
+    }
+
+    const promise = this.model.findAll(attributes);
+
+    this.clearIncludeOptions();
+
+    return promise;
+  }
+
+  findAndCountAll(
+    attributes?: any,
+  ): Promise<{ rows: Model<any, any>[]; count: number }> {
+    const promise = this.model.findAndCountAll(attributes);
+    return promise;
   }
 
   findOne(where: any): Promise<Model> {
@@ -35,12 +54,12 @@ export abstract class BaseRepository implements OnModuleInit {
     return this.model.create(data, fields);
   }
 
-  update(data: any, where: any): Promise<[number, Model[]]> {
-    return this.model.update(data, where);
-  }
-
   bulkInsert(data: any, fields?: any): Promise<Array<Model>> {
     return this.model.bulkCreate(data, fields);
+  }
+
+  update(data: any, where: any): Promise<[number, Model[]]> {
+    return this.model.update(data, where);
   }
 
   upsert(data: any, where: any): Promise<[Model, boolean]> {
@@ -79,6 +98,33 @@ export abstract class BaseRepository implements OnModuleInit {
     options.where[identifier] = dto[identifier];
 
     return options;
+  }
+
+  order(field: string, type: string): BaseRepository {
+    if (type == 'ASC') {
+      this.includeOptions['order'] = [[field, 'ASC']];
+    } else {
+      this.includeOptions['order'] = [[field, 'DESC']];
+    }
+
+    return this;
+  }
+
+  limit(limit: number): BaseRepository {
+    this.includeOptions['limit'] = limit;
+
+    return this;
+  }
+
+  includePagination(page: number, limit: number): BaseRepository {
+    this.includeOptions['limit'] = limit;
+    this.includeOptions['offset'] = (page - 1) * limit;
+
+    return this;
+  }
+
+  private clearIncludeOptions() {
+    this.includeOptions = {};
   }
 
   onModuleInit() {
