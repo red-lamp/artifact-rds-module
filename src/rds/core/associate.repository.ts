@@ -4,7 +4,8 @@ import { BaseRepository } from './base.repository';
 
 export abstract class AssociateRepository
   extends BaseRepository
-  implements OnApplicationBootstrap {
+  implements OnApplicationBootstrap
+{
   private associateFetch: Map<string, any>;
   private includeAttrs: any;
 
@@ -45,7 +46,7 @@ export abstract class AssociateRepository
 
     return promise;
   }
-  
+
   findOne(where: any): Promise<Model> {
     if (where && this.includeAttrs) {
       where.include = this.includeAttrs;
