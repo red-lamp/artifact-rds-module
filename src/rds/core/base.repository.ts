@@ -89,7 +89,7 @@ export abstract class BaseRepository implements OnModuleInit {
     return this.model;
   }
 
-  buildQueryOption(dto: any, identifier: string) {
+  buildQueryOption(dto: any, identifier: string): any {
     if (!dto[identifier]) {
       return null;
     }
