@@ -37,7 +37,10 @@ export abstract class AssociateRepository
   findAndCountAll(
     attributes?: any,
   ): Promise<{ rows: Model<any, any>[]; count: number }> {
-    if (attributes && this.includeAttrs) {
+    if (!attributes) {
+      attributes = {};
+    }
+    if (this.includeAttrs) {
       attributes.include = this.includeAttrs;
     }
     const promise = super.findAndCountAll(attributes);
