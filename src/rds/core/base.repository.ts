@@ -29,7 +29,17 @@ export abstract class BaseRepository implements OnModuleInit {
   findAndCountAll(
     attributes?: any,
   ): Promise<{ rows: Model<any, any>[]; count: number }> {
+    if (!attributes) {
+      attributes = {};
+    }
+    if (this.includeOptions) {
+      attributes = { ...attributes, ...this.includeOptions };
+    }
+
     const promise = this.model.findAndCountAll(attributes);
+
+    this.clearIncludeOptions();
+
     return promise;
   }
 
