@@ -3,7 +3,7 @@ import { Model, ModelCtor } from 'sequelize';
 
 export abstract class BaseRepository implements OnModuleInit {
   protected model: ModelCtor<Model>;
-  private includeOptions = {};
+  protected includeOptions = {};
 
   /**
    * TODO
@@ -11,13 +11,18 @@ export abstract class BaseRepository implements OnModuleInit {
    */
   protected abstract init(): ModelCtor<Model>;
 
-  findAll(attributes?: any): Promise<Model[]> {
-    if (!attributes) {
-      attributes = {};
+  private constructAttrOptions(attrOptions?: any) {
+    if (!attrOptions) {
+      attrOptions = {};
     }
     if (this.includeOptions) {
-      attributes = { ...attributes, ...this.includeOptions };
+      attrOptions = { ...attrOptions, ...this.includeOptions };
     }
+    return attrOptions;
+  }
+
+  findAll(attributes?: any): Promise<Model[]> {
+    attributes = this.constructAttrOptions(attributes);
 
     const promise = this.model.findAll(attributes);
 
@@ -29,12 +34,7 @@ export abstract class BaseRepository implements OnModuleInit {
   findAndCountAll(
     attributes?: any,
   ): Promise<{ rows: Model<any, any>[]; count: number }> {
-    if (!attributes) {
-      attributes = {};
-    }
-    if (this.includeOptions) {
-      attributes = { ...attributes, ...this.includeOptions };
-    }
+    attributes = this.constructAttrOptions(attributes);
 
     const promise = this.model.findAndCountAll(attributes);
 
@@ -44,7 +44,13 @@ export abstract class BaseRepository implements OnModuleInit {
   }
 
   findOne(where: any): Promise<Model> {
-    return this.model.findOne(where);
+    where = this.constructAttrOptions(where);
+
+    const promise = this.model.findOne(where);
+
+    this.clearIncludeOptions();
+
+    return promise;
   }
 
   async findAllWithCallback(
@@ -61,7 +67,13 @@ export abstract class BaseRepository implements OnModuleInit {
   }
 
   insert(data: any, fields?: any): Promise<Model> {
-    return this.model.create(data, fields);
+    fields = this.constructAttrOptions(fields);
+
+    const promises = this.model.create(data, fields);
+
+    this.clearIncludeOptions();
+
+    return promises;
   }
 
   bulkInsert(data: any, fields?: any): Promise<Array<Model>> {
