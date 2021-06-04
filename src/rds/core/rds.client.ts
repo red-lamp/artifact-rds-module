@@ -11,6 +11,12 @@ export class RDSClient {
    * @param configService a config service with value from .env
    */
   constructor(dialect: any, dbConfig: any) {
+    const sslConfig = dbConfig.ssl
+      ? {
+          require: true,
+          rejectUnauthorized: false,
+        }
+      : false;
     this.sequelize = new Sequelize(
       dbConfig.database,
       dbConfig.dbuser,
@@ -19,10 +25,7 @@ export class RDSClient {
         host: dbConfig.host,
         dialect: dialect,
         dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false,
-          },
+          ssl: sslConfig,
         },
       },
     );
