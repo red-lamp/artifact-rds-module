@@ -152,4 +152,10 @@ export abstract class BaseRepository implements OnModuleInit {
   onModuleInit() {
     this.model = this.init();
   }
+
+  query(sql: any, queryOptions?: object): Promise<any> {
+    const promise = this.model.sequelize.query(sql, queryOptions);
+    return promise;
+  }
+  
 }
