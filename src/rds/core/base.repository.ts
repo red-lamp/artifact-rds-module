@@ -76,7 +76,7 @@ export abstract class BaseRepository implements OnModuleInit {
     return promises;
   }
 
-  bulkInsert(data: any, fields?: any): Promise<Array<Model>> {
+  bulkInsert(data: any[], fields?: any): Promise<Array<Model>> {
     return this.model.bulkCreate(data, fields);
   }
 
@@ -153,9 +153,8 @@ export abstract class BaseRepository implements OnModuleInit {
     this.model = this.init();
   }
 
-  query(sql: any, queryOptions?: object): Promise<any> {
+  query(sql: any, queryOptions?: any): Promise<any> {
     const promise = this.model.sequelize.query(sql, queryOptions);
     return promise;
   }
-  
 }
