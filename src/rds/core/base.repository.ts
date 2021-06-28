@@ -1,5 +1,5 @@
 import { Logger, OnModuleInit } from '@nestjs/common';
-import { Model, ModelCtor } from 'sequelize';
+import { Sequelize, Model, ModelCtor } from 'sequelize';
 
 export abstract class BaseRepository implements OnModuleInit {
   protected model: ModelCtor<Model>;
@@ -43,7 +43,7 @@ export abstract class BaseRepository implements OnModuleInit {
     return promise;
   }
 
-  findOne(where: any): Promise<Model> {
+  findOne(where?: any): Promise<Model> {
     where = this.constructAttrOptions(where);
 
     const promise = this.model.findOne(where);
@@ -111,7 +111,7 @@ export abstract class BaseRepository implements OnModuleInit {
     return this.model;
   }
 
-  where(dto: any, identifier: string): any {
+  where(dto: any, identifier: string): BaseRepository {
     this.includeOptions['where'] = {};
     this.includeOptions['where'][identifier] = dto[identifier];
     return this;
@@ -136,6 +136,64 @@ export abstract class BaseRepository implements OnModuleInit {
   page(page: number, limit = 20): BaseRepository {
     limit = this.includeOptions['limit'];
     this.includeOptions['offset'] = (page - 1) * limit;
+
+    return this;
+  }
+
+  clause(
+    clause: string,
+    field: string,
+    display: string,
+    option = {},
+  ): BaseRepository {
+    if (!this.includeOptions['attributes']) {
+      this.includeOptions['attributes'] = [];
+    }
+    const attributes = this.includeOptions['attributes'];
+
+    if (option['cast']) {
+      attributes.push([
+        Sequelize.cast(
+          Sequelize.fn(clause, Sequelize.col(field)),
+          option['cast'],
+        ),
+        display,
+      ]);
+    } else {
+      attributes.push([Sequelize.fn(clause, Sequelize.col(field)), display]);
+    }
+
+    this.includeOptions['attributes'] = attributes;
+
+    return this;
+  }
+
+  jsonField(field: string, display: string): any {
+    if (!this.includeOptions['attributes']) {
+      this.includeOptions['attributes'] = [];
+    }
+    const attributes = this.includeOptions['attributes'];
+    attributes.push([Sequelize.json(field), display]);
+
+    this.includeOptions['attributes'] = attributes;
+
+    return this;
+  }
+
+  group(field: string, isJson?: true): any {
+    if (!this.includeOptions['group']) {
+      this.includeOptions['group'] = [];
+    }
+
+    const groups = this.includeOptions['group'];
+
+    if (isJson) {
+      groups.push(Sequelize.json(field));
+    } else {
+      groups.push(field);
+    }
+
+    this.includeOptions['group'] = groups;
 
     return this;
   }
