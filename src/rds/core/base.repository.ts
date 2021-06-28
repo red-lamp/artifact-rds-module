@@ -111,15 +111,10 @@ export abstract class BaseRepository implements OnModuleInit {
     return this.model;
   }
 
-  buildQueryOption(dto: any, identifier: string): any {
-    if (!dto[identifier]) {
-      return null;
-    }
-
-    const options = { where: {} };
-    options.where[identifier] = dto[identifier];
-
-    return options;
+  where(dto: any, identifier: string): any {
+    this.includeOptions['where'] = {};
+    this.includeOptions['where'][identifier] = dto[identifier];
+    return this;
   }
 
   order(field: string, type: string): BaseRepository {
