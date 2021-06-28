@@ -138,8 +138,8 @@ export abstract class BaseRepository implements OnModuleInit {
     return this;
   }
 
-  includePagination(page: number, limit: number): BaseRepository {
-    this.includeOptions['limit'] = limit;
+  page(page: number, limit = 20): BaseRepository {
+    limit = this.includeOptions['limit'];
     this.includeOptions['offset'] = (page - 1) * limit;
 
     return this;
