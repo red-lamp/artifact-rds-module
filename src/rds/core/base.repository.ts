@@ -1,5 +1,5 @@
 import { Logger, OnModuleInit } from '@nestjs/common';
-import { Sequelize, Model, ModelCtor } from 'sequelize';
+import { Sequelize, Model, ModelCtor, Op } from 'sequelize';
 
 export abstract class BaseRepository implements OnModuleInit {
   protected model: ModelCtor<Model>;
@@ -123,6 +123,19 @@ export abstract class BaseRepository implements OnModuleInit {
         this.includeOptions['where'][identifier] = dto[identifier];
       }
     }
+    return this;
+  }
+
+  or(dto: Array<any>): BaseRepository {
+    if (!dto) {
+      return this;
+    }
+    if (!this.includeOptions['where']) {
+      this.includeOptions['where'] = {};
+    }
+
+    this.includeOptions['where'][Op.or] = dto;
+
     return this;
   }
 
