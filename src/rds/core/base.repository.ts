@@ -177,6 +177,22 @@ export abstract class BaseRepository implements OnModuleInit {
     return this;
   }
 
+  field(field: string, display?: string): any {
+    if (!this.includeOptions['attributes']) {
+      this.includeOptions['attributes'] = [];
+    }
+    const attributes = this.includeOptions['attributes'];
+    if (display) {
+      attributes.push([field, display]);
+    } else {
+      attributes.push([field, field]);
+    }
+
+    this.includeOptions['attributes'] = attributes;
+
+    return this;
+  }
+
   jsonField(field: string, display: string): any {
     if (!this.includeOptions['attributes']) {
       this.includeOptions['attributes'] = [];
