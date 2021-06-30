@@ -27,6 +27,7 @@ export class RDSClient {
         dialectOptions: {
           ssl: sslConfig,
         },
+        logging: dbConfig.logging,
       },
     );
 

@@ -66,14 +66,14 @@ export abstract class BaseRepository implements OnModuleInit {
     }
   }
 
-  insert(data: any, fields?: any): Promise<Model> {
+  insert(data: any, fields?: any): Promise<void | Model> {
     fields = this.constructAttrOptions(fields);
 
-    const promises = this.model.create(data, fields);
+    const promise = this.model.create(data, fields);
 
     this.clearIncludeOptions();
 
-    return promises;
+    return promise;
   }
 
   bulkInsert(data: any[], fields?: any): Promise<Array<Model>> {
