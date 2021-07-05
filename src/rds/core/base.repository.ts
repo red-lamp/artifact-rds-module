@@ -188,8 +188,11 @@ export abstract class BaseRepository implements OnModuleInit {
     if (option['filter']) {
       let conditionQuery = '';
       if (Object.keys(option['filter']).length > 1) {
-        const condition = option['filter']['condition'];
+        const condition = option['filter']['condition']
+          ? option['filter']['condition']
+          : 'AND';
         const filterKeys = Object.keys(option['filter']);
+
         for (let i = 0; i < filterKeys.length; i++) {
           const filterKey = filterKeys[i];
           let suffixConditionQuery = '';
