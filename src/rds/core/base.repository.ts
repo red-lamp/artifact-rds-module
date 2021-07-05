@@ -162,27 +162,63 @@ export abstract class BaseRepository implements OnModuleInit {
     return this;
   }
 
-  clause(
-    clause: string,
-    field: string,
-    display: string,
-    option = {},
-  ): BaseRepository {
+  distinct(field: string, display: string): BaseRepository {
     if (!this.includeOptions['attributes']) {
       this.includeOptions['attributes'] = [];
     }
     const attributes = this.includeOptions['attributes'];
 
-    if (option['cast']) {
-      attributes.push([
-        Sequelize.cast(
-          Sequelize.fn(clause, Sequelize.col(field)),
-          option['cast'],
-        ),
-        display,
-      ]);
+    attributes.push([Sequelize.fn('distinct', Sequelize.col(field)), display]);
+
+    this.includeOptions['attributes'] = attributes;
+
+    return this;
+  }
+
+  sum(field: string, display: string, option = {}): BaseRepository {
+    if (!this.includeOptions['attributes']) {
+      this.includeOptions['attributes'] = [];
+    }
+    const attributes = this.includeOptions['attributes'];
+
+    if (option['filter']) {
+      let conditionQuery = '';
+      if (Object.keys(option['filter']).length > 1) {
+        const condition = option['filter']['condition'];
+        const filterKeys = Object.keys(option['filter']);
+        for (let i = 0; i < filterKeys.length; i++) {
+          const filterKey = filterKeys[i];
+          let suffixConditionQuery = '';
+          if (i < filterKeys.length - 1) {
+            suffixConditionQuery = ` ${condition}`;
+          }
+          conditionQuery += `${filterKey} = '${option['filter'][filterKey]}'${suffixConditionQuery}`;
+        }
+      } else {
+        const filterKey = Object.keys(option['filter'])[0];
+        conditionQuery = `${filterKey} = '${option['filter'][filterKey]}'`;
+      }
+
+      let sumQuery = '';
+      if (option['cast']) {
+        sumQuery = `CAST(SUM(${field}) FILTER (WHERE ${conditionQuery}) AS ${option['cast']})`;
+      } else {
+        sumQuery = `SUM(${field}) FILTER (WHERE status = ${conditionQuery}))`;
+      }
+
+      attributes.push([Sequelize.literal(sumQuery), display]);
     } else {
-      attributes.push([Sequelize.fn(clause, Sequelize.col(field)), display]);
+      if (option['cast']) {
+        attributes.push([
+          Sequelize.cast(
+            Sequelize.fn('sum', Sequelize.col(field)),
+            option['cast'],
+          ),
+          display,
+        ]);
+      } else {
+        attributes.push([Sequelize.fn('sum', Sequelize.col(field)), display]);
+      }
     }
 
     this.includeOptions['attributes'] = attributes;
