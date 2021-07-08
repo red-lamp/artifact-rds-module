@@ -197,7 +197,7 @@ export abstract class BaseRepository implements OnModuleInit {
           const filterKey = filterKeys[i];
           let suffixConditionQuery = '';
           if (i < filterKeys.length - 1) {
-            suffixConditionQuery = ` ${condition}`;
+            suffixConditionQuery = ` ${condition} `;
           }
           conditionQuery += `${filterKey} = '${option['filter'][filterKey]}'${suffixConditionQuery}`;
         }
@@ -213,16 +213,22 @@ export abstract class BaseRepository implements OnModuleInit {
         sumQuery = `SUM(${field}) FILTER (WHERE status = ${conditionQuery}))`;
       }
 
+      if (option.hasOwnProperty('coalesce')) {
+        sumQuery = `COALESCE(${sumQuery}, ${option['coalesce']})`;
+      }
+
       attributes.push([Sequelize.literal(sumQuery), display]);
     } else {
+      let sumFn = Sequelize.fn('sum', Sequelize.col(field));
+      if (option.hasOwnProperty('coalesce')) {
+        sumFn = Sequelize.fn(
+          'sum',
+          Sequelize.fn('COALESCE', Sequelize.col(field), option['coalesce']),
+        );
+      }
+
       if (option['cast']) {
-        attributes.push([
-          Sequelize.cast(
-            Sequelize.fn('sum', Sequelize.col(field)),
-            option['cast'],
-          ),
-          display,
-        ]);
+        attributes.push([Sequelize.cast(sumFn, option['cast']), display]);
       } else {
         attributes.push([Sequelize.fn('sum', Sequelize.col(field)), display]);
       }
