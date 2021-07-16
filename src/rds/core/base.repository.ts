@@ -227,10 +227,26 @@ export abstract class BaseRepository implements OnModuleInit {
         );
       }
 
-      if (option['cast']) {
-        attributes.push([Sequelize.cast(sumFn, option['cast']), display]);
+      if (option['json']) {
+        if (option['cast']) {
+          attributes.push([
+            Sequelize.literal(
+              `CAST(sum((${field})::numeric) AS ${option['cast']})`,
+            ),
+            display,
+          ]);
+        } else {
+          attributes.push([
+            Sequelize.literal(`sum((${field})::numeric)`),
+            display,
+          ]);
+        }
       } else {
-        attributes.push([Sequelize.fn('sum', Sequelize.col(field)), display]);
+        if (option['cast']) {
+          attributes.push([Sequelize.cast(sumFn, option['cast']), display]);
+        } else {
+          attributes.push([Sequelize.fn('sum', Sequelize.col(field)), display]);
+        }
       }
     }
 
